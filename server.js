@@ -83,6 +83,11 @@ app.delete("/deleteNote/:id", middleware.verifyToken, function (req, res) {
     }
   });
 });
+
+app.post("/register", async (req, res) => {
+  controllers.registerUser(req, res);
+});
+
 let PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("app is running on port", PORT);
