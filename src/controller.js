@@ -1,4 +1,8 @@
 const Note = require('./Note');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
+const jwtSecretKey = process.env.JWT_SECRET_KEY;
 function createNote(req, res) {
  if(!req.body.content) {
   return res.status(400).json({
@@ -13,9 +17,9 @@ function createNote(req, res) {
 
  note.save().then(function () {
   res.json(note);
- }).catch(function (errr) {
+ }).catch(function (error) {
   res.status(500).json({
-    message: errr.message || 'some error occurred'
+    message: error.message || 'some error occurred'
   });
  });
 }
@@ -65,7 +69,6 @@ function deleteNote(req, res) {
 
 
 function updateNote(req, res) {
-
   const filter = {'title': req.body.title};
   const newData = {
     'title': req.body.title,
@@ -80,7 +83,19 @@ function updateNote(req, res) {
   });
 }
 
+function loginNote(req, res) {
+  const user = {
+    id: 1,
+    username: "anil",
+    email: "anil@gmail.com"
+  }
+  const token = jwt.sign(user, jwtSecretKey);
+  res.send({"token" : token});
+}
+
+
 module.exports = {
+  loginNote,
   createNote,
   findAllNotes,
   findNote,
