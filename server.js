@@ -1,7 +1,12 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const https = require("https");
+const fs = require("fs");
+const path = require("path");
 dotenv.config();
+const passport = require("passport");
+
 const jwtSecretKey = process.env.JWT_SECRET_KEY;
 const bodyParser = require("body-parser");
 const middleware = require("./src/middleware");
@@ -10,7 +15,7 @@ const controllers = require("./src/controller");
 const app = express();
 // parse if application/json
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/x-www-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 const mongoose = require("mongoose");
@@ -31,7 +36,7 @@ app.get("/", function (req, res) {
 });
 
 app.post("/login", (req, res) => {
-  controllers.loginNote(req, res);
+  controllers.loginUser(req, res);
 });
 
 app.post("/create", middleware.verifyToken, function (req, res) {
@@ -89,6 +94,14 @@ app.post("/register", async (req, res) => {
 });
 
 let PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const sslServer = https.createServer(
+  {
+    key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
+  },
+  app
+);
+
+sslServer.listen(PORT, () => {
   console.log("app is running on port", PORT);
 });

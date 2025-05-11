@@ -95,7 +95,7 @@ function updateNote(req, res) {
     });
 }
 
-function loginNote(req, res) {
+function loginUser(req, res) {
   const user = {
     username: req.body.username,
     email: req.body.email,
@@ -112,7 +112,7 @@ const registerUser = async (req, res) => {
 };
 
 module.exports = {
-  loginNote,
+  loginUser,
   createNote,
   findAllNotes,
   findNote,
